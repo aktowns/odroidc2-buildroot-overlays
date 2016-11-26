@@ -1,0 +1,35 @@
+config BR2_PACKAGE_WIREGUARD
+	bool "wireguard"
+	depends on BR2_LINUX_KERNEL
+	help
+	   WireGuard is an extremely simple yet fast and modern VPN that
+	   utilizes state-of-the-art cryptography. It aims to be faster,
+	    simpler, leaner, and more useful than IPSec, while avoiding the
+	   massive headache. It intends to be considerably more performant
+	   than OpenVPN. WireGuard is designed as a general purpose VPN for
+	   running on embedded interfaces and super computers alike, fit for
+	   many different circumstances.
+
+	   requires:
+	    CONFIG_NET for basic networking support
+	    CONFIG_INET for basic IP support
+	    CONFIG_NET_UDP_TUNNEL for sending and receiving UDP packets
+	    CONFIG_NF_CONNTRACK for determining the source address when constructing ICMP packets
+	    CONFIG_NETFILTER_XT_MATCH_HASHLIMIT for ratelimiting when under DoS attacks
+	    CONFIG_IP6_NF_IPTABLES only if using CONFIG_IPV6 for ratelimiting when under DoS attacks
+	    CONFIG_CRYPTO_BLKCIPHER for doing scatter-gather I/O
+	    CONFIG_PADATA for parallel crypto, only available on multi-core machines
+
+	   https://www.wireguard.io/
+
+if BR2_PACKAGE_WIREGUARD
+
+config BR2_PACKAGE_WIREGUARD_TOOLS
+	select BR2_PACKAGE_LIBMNL
+	bool "wireguard-tools"
+	help
+	   Provides tools for the wireguard kernel module
+
+	   https://www.wireguard.io/
+
+endif
