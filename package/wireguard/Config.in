@@ -1,3 +1,6 @@
+comment "wireguard needs a Linux kernel to be built"
+	depends on !BR2_LINUX_KERNEL
+
 config BR2_PACKAGE_WIREGUARD
 	bool "wireguard"
 	depends on BR2_LINUX_KERNEL
@@ -26,6 +29,7 @@ if BR2_PACKAGE_WIREGUARD
 
 config BR2_PACKAGE_WIREGUARD_TOOLS
 	select BR2_PACKAGE_LIBMNL
+	depends on BR2_LINUX_KERNEL
 	bool "wireguard-tools"
 	help
 	   Provides tools for the wireguard kernel module

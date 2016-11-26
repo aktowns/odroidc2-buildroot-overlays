@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Sets up and starts wireguard
+#
+
+start() {
+  umask 077
+
+  if [ ! -d /etc/wireguard/keys ]; then
+    printf "Generating wireguard keys: "
+    mkdir -p /etc/wireguard/keys
+    wg genkey > /etc/wireguard/keys/private
+    wg pubkey < /etc/wireguard/keys/private > /etc/wireguard/keys/public
+  fi
+
+  printf "Starting wireguard vpn: "
+  ip link add dev wg0 type wireguard
+  test -r /etc/default/wireguard && wg setconf wg0 /etc/default/wireguard
+  ip link set up dev wg0
+
+  [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+stop() {
+  printf "Stopping wireguard vpn: "
+  ip link set down dev wg0
+  ip link del dev wg0
+
+  [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+restart() {
+  stop
+  start
+}
+
+case "$1" in
+  start)
+    start
+  ;;
+  stop)
+    stop
+  ;;
+  restart|reload)
+    restart
+  ;;
+  *)
+  echo "Usage: $0 {start|stop|restart}"
+  exit 1
+esac
+
+exit $?
+
